@@ -1,6 +1,3 @@
-Berikut **README.md Progress 40%** yang *rapi, sederhana, akademis*, dan **siap dimasukkan ke LMS**.
-
-Kamu tinggal copy–paste ke file `README.md` di dalam folder project.
 
 ---
 
