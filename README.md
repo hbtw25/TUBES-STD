@@ -1,7 +1,4 @@
-
----
-
-# 📘 **Tugas Besar Struktur Data – Progress 40%**
+# 📘 **Tugas Besar Struktur Data – Final Release (100%)**
 
 ## **Sistem Manajemen Pembelian Senjata Buy Phase Valorant**
 
@@ -11,158 +8,100 @@
 
 **Anggota Kelompok:**
 
-| NIM              | Nama                              | List yang Dikerjakan  |
+| NIM              | Nama                              | Peran / Fokus         |
 | ---------------- | --------------------------------- | --------------------- |
 | **103032430021** | **Harsya Brahmantyo Wibowo**      | Parent (Player) – SLL |
 | **103032400011** | **Raditya Vihandika Bari Jabran** | Child (Weapon) – DLL  |
 
 ---
 
-# 📌 **1. Deskripsi Singkat Program**
+# 📌 **1. Deskripsi Program**
 
-Program ini merupakan implementasi **Multi Linked List (MLL) Tipe B**, di mana terdapat:
+Program ini adalah implementasi **Multi Linked List (MLL) Tipe B** untuk mensimulasikan sistem pembelian senjata pada game Valorant.
+Sistem ini menangani relasi **Many-to-Many** antara **Player** dan **Weapon**, di mana:
+*   Satu Player bisa membeli banyak Weapon.
+*   Satu Weapon bisa dibeli oleh banyak Player.
 
-1. **List Parent (Single Linked List – SLL):**
-   Menyimpan data **Player** pada game Valorant.
-2. **List Child (Double Linked List – DLL):**
-   Menyimpan data **Weapon/Equipment** yang tersedia pada Buy Phase.
-3. **List Relasi (SLL):**
-   Menghubungkan Player dengan Weapon yang dibeli pada sebuah round.
-
-Hubungan bersifat **Many-to-Many (M ke N)**:
-
-* 1 Player dapat membeli banyak Weapon.
-* 1 Weapon dapat dibeli oleh banyak Player (pada transaksi berbeda).
-
-Program dibuat sederhana agar mudah dipresentasikan pada level mahasiswa semester 3.
+Relasi antar data direpresentasikan menggunakan **Linked List Relasi**, bukan pointer langsung.
 
 ---
 
-# 📌 **2. Struktur Data (Progress 40%)**
+# 📌 **2. Spesifikasi Struktur Data**
 
-### ✔ **Struct yang sudah dibuat**
+Codingan ini mengikuti standar **Classic ADT** (Sesuai Modul Lab/Kuliah):
+1.  **Typedef Pointer**: Menggunakan `addressParent`, `addressChild`, `addressRelasi` (bukan `Node*` langsung).
+2.  **Explicit Arrow Syntax**: Menggunakan akses `P->info`, `P->next` untuk kejelasan logika pointer.
+3.  **Nullptr**: Menggunakan standar modern C++11 `nullptr`.
+4.  **Memory Management**: Menggunakan `alokasi` dan `dealokasi` terpisah.
 
-* `Player`
-* `Weapon`
-* `Relasi`
-* `NodeParent` (SLL)
-* `NodeChild` (DLL)
-* `NodeRelasi` (SLL)
-* `ListParent`, `ListChild`, `ListRelasi`
-
-### ✔ **Fungsi-fungsi ADT yang sudah dibuat**
-
-#### **Parent – SLL**
-
-* `createListParent()`
-* `alokasiParent()`
-* `insertLastParent()`
-* `findParent()`
-* `showParent()`
-
-#### **Child – DLL**
-
-* `createListChild()`
-* `alokasiChild()`
-* `insertLastChild()`
-* `findChild()`
-* `showChild()`
-
-#### **Relasi – SLL**
-
-* `createListRelasi()`
-* `alokasiRelasi()`
-* `insertFirstRelasi()`
-* `showRelasi()`
-* `showWeaponByPlayer()` *(versi sederhana)*
+**Jenis List:**
+*   **List Parent** (Player): **Single Linked List (SLL)**
+*   **List Child** (Weapon): **Doubly Linked List (DLL)**
+*   **List Relasi** (Transaksi): **Single Linked List (SLL)**
 
 ---
 
-# 📌 **3. Fitur yang Berhasil Diimplementasikan (40%)**
+# 📌 **3. Status Fitur (100% Completed)**
 
-### ✔ Input data Player
+Berikut adalah daftar fitur yang telah berhasil diimplementasikan sepenuhnya:
 
-### ✔ Input data Weapon
+### ✅ **A. Manajemen Data Dasar (CRUD)**
+| Fitur | Status | Keterangan |
+| :--- | :--- | :--- |
+| **Insert Player** | ✔ DONE | `insertLastParent` |
+| **Insert Weapon** | ✔ DONE | `insertLastChild` |
+| **Insert Transaksi** | ✔ DONE | `insertFirstRelasi` |
+| **Delete Player** | ✔ DONE | `deleteParent` (Cascading + `dealokasiParent`) |
+| **Delete Weapon** | ✔ DONE | `deleteChild` (Cascading + `dealokasiChild`) |
+| **Delete Transaksi** | ✔ DONE | `deleteRelasi` (+ `dealokasiRelasi`) |
+| **Find Player** | ✔ DONE | `findParent` |
+| **Find Weapon** | ✔ DONE | `findChild` |
 
-### ✔ Membuat transaksi pembelian (relasi)
+### ✅ **B. Pelaporan & View (Show)**
+| Fitur | Status | Keterangan |
+| :--- | :--- | :--- |
+| **Show All Player** | ✔ DONE | Menampilkan daftar player |
+| **Show All Weapon** | ✔ DONE | Menampilkan daftar weapon |
+| **Show All Transaksi** | ✔ DONE | Menampilkan riwayat pembelian |
+| **Show Weapon per Player** | ✔ DONE | Menampilkan belanjaan player X |
+| **Show Player per Weapon** | ✔ DONE | Menampilkan pembeli weapon Y |
+| **Show All Detail** | ✔ DONE | Nested view: Player -> List Belanjaan |
 
-### ✔ Menampilkan:
+### ✅ **C. Statistik (Counting)**
+| Fitur | Status | Keterangan |
+| :--- | :--- | :--- |
+| **Count Weapon per Player** | ✔ DONE | Berapa senjata yang dibeli si X? |
+| **Count Pembeli per Weapon** | ✔ DONE | Berapa orang yang beli senjata Y? |
+| **Count Weapon Tak Terbeli** | ✔ DONE | Weapon yang belum laku sama sekali |
+| **Count Player Tak Membeli** | ✔ DONE | Player hemat yang belum belanja |
 
-* Semua Player
-* Semua Weapon
-* Semua transaksi pembelian
-* Semua weapon yang dibeli oleh 1 player
-
-### ✔ Program sudah terpisah menjadi 3 file:
-
-* `mll.h` → ADT / deklarasi
-* `mll.cpp` → implementasi fungsi
-* `main.cpp` → menu utama dan interaksi pengguna
-
----
-
-# 📌 **4. Fitur yang Belum Dibuat (Akan Diselesaikan pada 80% & 100%)**
-
-Sesuai spesifikasi MLL Tipe B, berikut fitur yang masih **TODO**:
-
-### ❌ Delete Data
-
-* Hapus Player
-* Hapus Weapon
-* Hapus Relasi
-
-### ❌ Validasi & Pencarian Lanjutan
-
-* Mengecek apakah player membeli weapon tertentu
-* Menampilkan semua player yang membeli satu weapon
-* Menampilkan semua player beserta daftar pembeliannya
-* Menampilkan semua weapon beserta pembelinya
-
-### ❌ Perhitungan (Counting)
-
-* Jumlah weapon yang dibeli player tertentu
-* Jumlah player yang membeli weapon tertentu
-* Jumlah weapon yang belum dibeli
-* Jumlah player yang belum membeli
-
-### ❌ Edit Relasi
-
-* Mengganti weapon dalam pembelian
-* Mengganti player dalam pembelian
+### ✅ **D. Fitur Tambahan**
+| Fitur | Status | Keterangan |
+| :--- | :--- | :--- |
+| **Edit Transaksi** | ✔ DONE | Ganti senjata (`editRelasiGantiWeapon`) |
+| **Edit Transaksi** | ✔ DONE | Ganti pembeli (`editRelasiGantiPlayer`) |
+| **Cek Relasi** | ✔ DONE | Apakah Player A beli Weapon B? |
 
 ---
 
-# 📌 **5. Cara Menjalankan Program (Code::Blocks)**
+# 📌 **4. Cara Menjalankan Program**
 
-1. Buat project baru **Console Application C++**.
-2. Tambahkan file berikut:
+1.  Pastikan compiler mendukung C++11 (bawaan GCC/MinGW modern sudah support).
+2.  File sumber kode (source code):
+    *   `mll.h` (Header ADT)
+    *   `mll.cpp` (Implementasi Fungsi)
+    *   `main.cpp` (Menu Utama)
+3.  **Compile & Run**.
 
-   * `mll.h`
-   * `mll.cpp`
-   * `main.cpp`
-3. Pastikan ketiganya ada dalam project.
-4. Klik **Build & Run**.
-
----
-
-# 📌 **6. Catatan Presentasi**
-
-* Setiap anggota menjelaskan **list yang menjadi bagiannya**:
-
-  * **Harsya → Parent (SLL)**
-  * **Raditya → Child (DLL)**
-* Relasi dijelaskan **bersama-sama**, karena menjadi penghubung.
-* Program sengaja dibuat sederhana agar lebih fokus pada:
-
-  * pemahaman pointer,
-  * bentuk linked list,
-  * relasi antar list.
+Jika menggunakan Code::Blocks / Dev-C++:
+1.  Buat **Console Project**.
+2.  Masukkan ketiga file tersebut ke dalam project.
+3.  Tekan **F9** (Build & Run).
 
 ---
 
-# 📌 **7. Status Progress**
+# 📌 **5. Catatan Penting (Untuk Asisten/Dosen)**
 
-**Progress ADT & kode mencapai ±40% dari total spesifikasi Tugas Besar.**
-
----
-
+*   **Dealokasi**: Kami telah mengimplementasikan prosedur `dealokasi` secara eksplisit untuk mencegah *memory leak* saat penghapusan (delete) data Parent, Child, maupun Relasi.
+*   **Cascading Delete**: Jika Parent dihapus, semua data Relasi yang terkait dengannya juga ikut terhapus otomatis. Begitu juga dengan Child.
+*   **Formal Naming**: Penamaan fungsi menggunakan Bahasa Indonesia baku (`Tidak` bukan `Tak`) agar formal.

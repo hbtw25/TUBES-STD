@@ -1,0 +1,497 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuration for code listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% Margin configurations
+\geometry{
+    a4paper,
+    left=3cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm
+}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large DESKRIPSI TUGAS BESAR}
+\end{center}
+
+\vspace{1cm}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    
+    \item \textbf{JUDUL} : Manajemen Pembelian Senjata pada Buy Phase Game Valorant
+
+    \item \textbf{TIPE MLL} : Tipe B
+
+    \item \textbf{Jenis List Parent} : Single Linked List
+
+    \item \textbf{Jenis List Child} : Doubly Linked List
+
+    \item \textbf{Model MLL} :
+    
+    \begin{center}
+        \fcolorbox{black}{white}{\parbox{10cm}{\centering \vspace{1cm} [GAMBAR MODEL MLL TIPE B] \\ \vspace{0.5cm} \small{(Parent SLL, Child DLL, Relasi SLL)} \vspace{1cm}}}
+    \end{center}
+    
+    \item \textbf{Data Player (Parent)} :
+    \begin{itemize}
+        \item ID Player
+        \item Nama Player
+        \item Role (Duelist/Controller/Initiator/Sentinel)
+        \item Credit (Uang)
+    \end{itemize}
+
+    \item \textbf{Data Weapon (Child)} :
+    \begin{itemize}
+        \item ID Weapon
+        \item Nama Weapon
+        \item Kategori
+        \item Harga
+    \end{itemize}
+
+    \item \textbf{Spesifikasi Program (Bobot Total 100)}
+    
+    \begin{enumerate}[label=\alph*.]
+        \item \textbf{Insert element parent}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{insertLastParent})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void insertLastParent(ListParent &LP, addressParent N) {
+    if (LP.first == nullptr) {
+        LP.first = N;
+    } else {
+        addressParent P = LP.first;
+        while (P->next != nullptr) {
+            P = P->next;
+        }
+        P->next = N;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Insert element child}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{insertLastChild})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void insertLastChild(ListChild &LC, addressChild N) {
+    if (LC.first == nullptr) { 
+        LC.first = N; 
+        LC.last = N; 
+    } else {
+        N->prev = LC.last;
+        LC.last->next = N;
+        LC.last = N;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Insert element relation}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{insertFirstRelasi})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void insertFirstRelasi(ListRelasi &LR, addressRelasi N) {
+    N->next = LR.first;
+    LR.first = N;
+}
+\end{lstlisting}
+
+        \item \textbf{Delete element parent}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{deleteParent} \& \texttt{dealokasiParent})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+bool deleteParent(ListParent &LP, ListRelasi &LR, string idPlayer) {
+    if (LP.first == nullptr) return false;
+
+    addressParent prevNode = nullptr;
+    addressParent cur = LP.first;
+
+    while (cur != nullptr) {
+        if (cur->info.idPlayer == idPlayer) {
+            deleteRelasiByPlayerPtr(LR, cur); // Delete cascading
+
+            if (prevNode == nullptr) LP.first = cur->next;
+            else prevNode->next = cur->next;
+
+            dealokasiParent(cur);
+            return true;
+        }
+        prevNode = cur;
+        cur = cur->next;
+    }
+    return false;
+}
+\end{lstlisting}
+
+        \item \textbf{Delete element child}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{deleteChild} \& \texttt{dealokasiChild})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+bool deleteChild(ListChild &LC, ListRelasi &LR, string idWeapon) {
+    if (LC.first == nullptr) return false;
+
+    addressChild cur = LC.first;
+    while (cur != nullptr) {
+        if (cur->info.idWeapon == idWeapon) {
+            deleteRelasiByWeaponPtr(LR, cur); // Delete cascading
+
+            if (cur->prev != nullptr) cur->prev->next = cur->next;
+            else LC.first = cur->next;
+
+            if (cur->next != nullptr) cur->next->prev = cur->prev;
+            else LC.last = cur->prev;
+
+            dealokasiChild(cur);
+            return true;
+        }
+        cur = cur->next;
+    }
+    return false;
+}
+\end{lstlisting}
+
+        \item \textbf{Delete element relation}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{deleteRelasi} \& \texttt{dealokasiRelasi})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+bool deleteRelasi(ListRelasi &LR, string idPlayer, string idWeapon, int round) {
+    if (LR.first == nullptr) return false;
+
+    addressRelasi prevNode = nullptr;
+    addressRelasi cur = LR.first;
+
+    while (cur != nullptr) {
+        bool match = (cur->info.pPlayer->info.idPlayer == idPlayer &&
+                      cur->info.pWeapon->info.idWeapon == idWeapon &&
+                      cur->info.round == round);
+        if (match) {
+            if (prevNode == nullptr) LR.first = cur->next;
+            else prevNode->next = cur->next;
+
+            dealokasiRelasi(cur);
+            return true;
+        }
+        prevNode = cur;
+        cur = cur->next;
+    }
+    return false;
+}
+\end{lstlisting}
+
+        \item \textbf{Find element Parent}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{findParent})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+addressParent findParent(ListParent LP, string idPlayer) {
+    addressParent P = LP.first;
+    while (P != nullptr) {
+        if (P->info.idPlayer == idPlayer) return P;
+        P = P->next;
+    }
+    return nullptr;
+}
+\end{lstlisting}
+
+        \item \textbf{Find element child}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{findChild})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+addressChild findChild(ListChild LC, string idWeapon) {
+    addressChild P = LC.first;
+    while (P != nullptr) {
+        if (P->info.idWeapon == idWeapon) return P;
+        P = P->next;
+    }
+    return nullptr;
+}
+\end{lstlisting}
+
+        \item \textbf{Find apakah parent dan child tertentu memiliki relasi}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{cekRelasi})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+bool cekRelasi(ListRelasi LR, string idPlayer, string idWeapon) {
+    addressRelasi R = LR.first;
+    while (R != nullptr) {
+        if (R->info.pPlayer->info.idPlayer == idPlayer &&
+            R->info.pWeapon->info.idWeapon == idWeapon) return true;
+        R = R->next;
+    }
+    return false;
+}
+\end{lstlisting}
+
+        \item \textbf{Show all data di List Parent}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{showParent})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void showParent(ListParent LP) {
+    if (LP.first == nullptr) { cout << "Belum ada player.\n"; return; }
+    addressParent P = LP.first;
+    while (P != nullptr) {
+        cout << P->info.idPlayer << " | " << P->info.nama << "\n";
+        P = P->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Show all data di List Child}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{showChild})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void showChild(ListChild LC) {
+    if (LC.first == nullptr) { cout << "Belum ada weapon.\n"; return; }
+    addressChild P = LC.first;
+    while (P != nullptr) {
+        cout << P->info.idWeapon << " | " << P->info.nama << "\n";
+        P = P->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Show data child dari parent tertentu}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{tampilWeaponPerPlayer})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void tampilWeaponPerPlayer(ListRelasi LR, string idPlayer) {
+    addressRelasi R = LR.first;
+    while (R != nullptr) {
+        if (R->info.pPlayer->info.idPlayer == idPlayer) {
+            cout << "- " << R->info.pWeapon->info.nama << "\n";
+        }
+        R = R->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Show data parent dari child tertentu}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{tampilPlayerPerWeapon})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void tampilPlayerPerWeapon(ListRelasi LR, string idWeapon) {
+    addressRelasi R = LR.first;
+    while (R != nullptr) {
+        if (R->info.pWeapon->info.idWeapon == idWeapon) {
+            cout << "- " << R->info.pPlayer->info.nama << "\n";
+        }
+        R = R->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Show setiap data parent beserta data child yang berelasi dengannya}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{tampilSemuaPlayerDanWeapon})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void tampilSemuaPlayerDanWeapon(ListParent LP, ListRelasi LR) {
+    addressParent P = LP.first;
+    while (P != nullptr) {
+        cout << P->info.nama << ":\n";
+        addressRelasi R = LR.first;
+        while (R != nullptr) {
+            if (R->info.pPlayer == P) {
+                cout << "  - " << R->info.pWeapon->info.nama << "\n";
+            }
+            R = R->next;
+        }
+        P = P->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Show setiap data child beserta data parent yang berelasi dengannya}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{tampilSemuaWeaponDanPlayer})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+void tampilSemuaWeaponDanPlayer(ListChild LC, ListRelasi LR) {
+    addressChild W = LC.first;
+    while (W != nullptr) {
+        cout << W->info.nama << ":\n";
+        addressRelasi R = LR.first;
+        while (R != nullptr) {
+            if (R->info.pWeapon == W) {
+                cout << "  - " << R->info.pPlayer->info.nama << "\n";
+            }
+            R = R->next;
+        }
+        W = W->next;
+    }
+}
+\end{lstlisting}
+
+        \item \textbf{Count jumlah child element parent tertentu}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{hitungTotalWeaponPlayer})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+int hitungTotalWeaponPlayer(ListRelasi LR, string idPlayer) {
+    int cnt = 0;
+    addressRelasi R = LR.first;
+    while (R != nullptr) {
+        if (R->info.pPlayer->info.idPlayer == idPlayer) cnt++;
+        R = R->next;
+    }
+    return cnt;
+}
+\end{lstlisting}
+
+        \item \textbf{Count jumlah parent yang dimiliki oleh child tertentu}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{hitungTotalPlayerWeapon})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+int hitungTotalPlayerWeapon(ListRelasi LR, string idWeapon) {
+    int cnt = 0;
+    addressRelasi R = LR.first;
+    while (R != nullptr) {
+        if (R->info.pWeapon->info.idWeapon == idWeapon) cnt++;
+        R = R->next;
+    }
+    return cnt;
+}
+\end{lstlisting}
+
+        \item \textbf{Count element child yang tidak memiliki parent}
+        \begin{itemize}
+            \item PIC: Raditya
+            \item Status: \textbf{Done} (Function: \texttt{hitungWeaponTidakTerbeli})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+int hitungWeaponTidakTerbeli(ListChild LC, ListRelasi LR) {
+    int cnt = 0;
+    addressChild W = LC.first;
+    while (W != nullptr) {
+        bool pernah = false;
+        addressRelasi R = LR.first;
+        while (R != nullptr) {
+            if (R->info.pWeapon == W) { pernah = true; break; }
+            R = R->next;
+        }
+        if (!pernah) cnt++;
+        W = W->next;
+    }
+    return cnt;
+}
+\end{lstlisting}
+
+        \item \textbf{Count element parent yang tidak memiliki child}
+        \begin{itemize}
+            \item PIC: Harsya
+            \item Status: \textbf{Done} (Function: \texttt{hitungPlayerTidakMembeli})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+int hitungPlayerTidakMembeli(ListParent LP, ListRelasi LR) {
+    int cnt = 0;
+    addressParent P = LP.first;
+    while (P != nullptr) {
+        bool pernah = false;
+        addressRelasi R = LR.first;
+        while (R != nullptr) {
+            if (R->info.pPlayer == P) { pernah = true; break; }
+            R = R->next;
+        }
+        if (!pernah) cnt++;
+        P = P->next;
+    }
+    return cnt;
+}
+\end{lstlisting}
+
+        \item \textbf{Edit relasi (Change Child/Parent)}
+        \begin{itemize}
+            \item PIC: Bersama
+            \item Status: \textbf{Done} (Function: \texttt{editRelasiGantiWeapon} \& \texttt{editRelasiGantiPlayer})
+        \end{itemize}
+\begin{lstlisting}[language=C++]
+bool editRelasiGantiWeapon(...) {
+    // Cari transaksi lama, ubah pWeapon ke weapon baru
+    // ...
+}
+
+bool editRelasiGantiPlayer(...) {
+    // Cari transaksi lama, ubah pPlayer ke player baru
+    // ...
+}
+\end{lstlisting}
+    \end{enumerate}
+
+    \item \textbf{Persen kontribusi anggota dalam tim (total 100\%)}
+
+    \begin{itemize}
+        \item \textbf{Harsya Brahmantyo Wibowo (103032430021) : 50\%}
+        \item \textbf{Raditya Vihandika Bari Jabran (103032400011) : 50\%}
+    \end{itemize}
+
+    \item \textbf{Bukti responsi tugas besar bersama asdos, asprak, ataupun dosen.}
+    
+    \begin{center}
+        \vspace{2cm}
+        \fcolorbox{black}{white}{\parbox{10cm}{\centering \vspace{2cm} [TEMPEL FOTO BUKTI RESPONSI DISINI] \vspace{2cm}}}
+    \end{center}
+
+\end{enumerate}
+
+\end{document}
